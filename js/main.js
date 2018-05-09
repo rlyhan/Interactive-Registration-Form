@@ -32,7 +32,9 @@ jobRole.addEventListener('click', (e) => {
 /* T-Shirt Info Section */
 // hide the Color menu and label initially (as theme hasn't been selected yet)
 // if the currently selected theme is not the same theme from previous click
-  // if theme is simply 'Select Theme'
+  // if previous theme was 'Select Theme'
+    // remove the error indication
+  // if current theme is simply 'Select Theme'
     // hide the Color menu and label
   // else
     // show the Color menu and label
@@ -53,6 +55,9 @@ var previousTheme = designMenu.options[designMenu.selectedIndex].text;
 designMenu.addEventListener('click', (e) => {
   var theme = e.target.options[e.target.selectedIndex].text;
   if (previousTheme != theme) {
+    if (previousTheme == 'Select Theme') {
+      $('.shirt .error').remove();
+    }
     previousTheme = theme;
     if (theme == 'Select Theme') {
       colorSection.style.display = 'none';
@@ -133,12 +138,13 @@ function addToRunningTotal(selectedActivity) {
 }
 
 /* Payment Info Section */
-// initially hide the credit card payment fields
+// show the credit card payment fields by default
 // if selected payment method is not 'Select Payment Method'
   // display the payment info of this payment method
-var creditCardFields = document.getElementById('credit-card');
-creditCardFields.style.display = 'none';
+// var creditCardFields = document.getElementById('credit-card');
+// creditCardFields.style.display = 'none';
 var paymentMenu = document.getElementById('payment');
+paymentMenu.selectedIndex = Array.from(paymentMenu.children).indexOf(paymentMenu.children[1]);
 paymentMenu.addEventListener('click', (e) => {
   var paymentMethod = e.target.options[e.target.selectedIndex].text;
   displayPaymentInfo(paymentMethod);
@@ -197,6 +203,7 @@ document.querySelector('button').addEventListener('click', (e) => {
           // indicate this
 function validateForms() {
   var typedForms = document.querySelectorAll('input');
+  var designMenu = document.getElementById('design');
   var designLabel = document.querySelector('.shirt').lastElementChild;
   var designChoice = designMenu.options[designMenu.selectedIndex].text;
   var paymentMethod = document.getElementById('payment');
@@ -207,7 +214,7 @@ function validateForms() {
   if ($("[type=checkbox]:checked").length < 1) {
      var activityList = document.querySelectorAll('.activities label')
      var str = 'Please select at least one activity';
-     addErrorIndication(str, activityList[0]);
+     addErrorIndication(str, activityList[activityList.length-1]);
   }
   if (paymentForm == 'Select Payment Method') {
     addErrorIndication('Please select a payment method', paymentMenu);
@@ -254,9 +261,11 @@ email.setAttribute('onkeypress', 'emailCheck()');
 function emailCheck() {
   $('.error').remove();
   if (checkFormat(email) == false) {
-    var str = 'Please enter an email address';
+    var str;
     if (email.value.length > 0) {
       str = 'Please enter a valid email address';
+    } else {
+      str = 'Please enter an email address';
     }
     addErrorIndication(str, email);
   }
@@ -280,13 +289,14 @@ function checkFormat(form) {
 }
 // since there is an error, make allFormsValid false
 // create a paragraph element with a class of error, and errorIndication text
-// insert the paragraph before the invalid form
+// make the text colour red
+// insert the paragraph after the invalid form
 function addErrorIndication(errorIndication, elem) {
   allFormsValid = false;
   var errorPara = document.createElement("p");
   var node = document.createTextNode(errorIndication);
   errorPara.appendChild(node);
   errorPara.className = 'error';
-  var refNode = elem.previousElementSibling;
-  refNode.parentNode.insertBefore(errorPara, refNode.nextSibling);
+  errorPara.style.color = 'red';
+  elem.parentNode.insertBefore(errorPara, elem.nextSibling);
 }
