@@ -3,29 +3,19 @@
 document.getElementById('name').focus();
 
 /* Job Role Section */
-// get value of Job Role drop down menu
-// if value is other, and a text field doesn't already exist
-  // create a text field
-// else
-  // if text field exists
-    // delete it
+// initially hide the text field of the 'Other' option
+// if selected value is other
+  // show the text field
+// else of value is not other
+  // hide the text field
 var jobRole = document.getElementById('title');
-var elem;
+var other = document.getElementById('other-title');
+other.style.display = 'none';
 jobRole.addEventListener('click', (e) => {
-  if (e.target.value == 'other' && !elem) {
-    var other = document.createElement("input");
-    other.type = 'text';
-    other.id = 'other-title';
-    other.name = 'user_title';
-    other.append("Your Job Role");
-    jobRole.parentElement.append(other);
-    elem = document.getElementById('other-title');
-  } else {
-    elem = document.getElementById('other-title');
-    if (elem) {
-      jobRole.parentElement.removeChild(elem);
-    }
-    elem = '';
+  if (e.target.value == 'other') {
+    other.style.display = 'block';
+  } else if (e.target.value != 'other'){
+    other.style.display = 'none';
   }
 });
 
@@ -139,12 +129,16 @@ function addToRunningTotal(selectedActivity) {
 
 /* Payment Info Section */
 // show the credit card payment fields by default
+// hide paypal and bitcoin paragraphs by default
 // if selected payment method is not 'Select Payment Method'
   // display the payment info of this payment method
-// var creditCardFields = document.getElementById('credit-card');
-// creditCardFields.style.display = 'none';
 var paymentMenu = document.getElementById('payment');
 paymentMenu.selectedIndex = Array.from(paymentMenu.children).indexOf(paymentMenu.children[1]);
+var p = document.querySelectorAll('p')
+var paypal = p[0];
+var bitcoin = p[1];
+paypal.style.display = 'none';
+bitcoin.style.display = 'none';
 paymentMenu.addEventListener('click', (e) => {
   var paymentMethod = e.target.options[e.target.selectedIndex].text;
   displayPaymentInfo(paymentMethod);
@@ -158,10 +152,20 @@ paymentMenu.addEventListener('click', (e) => {
 function displayPaymentInfo(paymentMethod) {
   if (paymentMethod == 'Credit Card') {
     document.querySelector('#credit-card').style.display = 'block';
-  } else if (paymentMethod == 'PayPal' || paymentMethod == 'Bitcoin') {
+    paypal.style.display = 'none';
+    bitcoin.style.display = 'none';
+  } else if (paymentMethod == 'PayPal') {
     document.querySelector('#credit-card').style.display = 'none';
+    paypal.style.display = 'block';
+    bitcoin.style.display = 'none';
+  } else if (paymentMethod == 'Bitcoin') {
+    document.querySelector('#credit-card').style.display = 'none';
+    paypal.style.display = 'none';
+    bitcoin.style.display = 'block';
   } else if (paymentMethod == 'Select Payment Method') {
     document.querySelector('#credit-card').style.display = 'none';
+    paypal.style.display = 'none';
+    bitcoin.style.display = 'none';
   }
 }
 
